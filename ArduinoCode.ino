@@ -13,7 +13,7 @@ int motorsRight_digital = 2;
 int motorsLeft_analog = 5;
 int motorsLeft_digital = 4;
 
-char BTCommand = 'S';
+char BTCommand = '';
 int motorPower = 0;
 float directionValue = 1.0f;
 
@@ -370,7 +370,9 @@ void IIC_end() {
 
 // BT MAC TO LED
 void BTaddressReader() {
+  
   Serial.begin(9600);  // 9600
+
   delay(1000);
   Serial.println("AT+ADDR?");  // "AT+ADDR?"
 
