@@ -1,4 +1,4 @@
-# Arduino-Bluetooth-Car-Remote-Controller
+# Arduino Bluetooth car remote controller
 ![Feature](https://github.com/shikhli/Arduino-4WD-Bluetooth-Car-Code/assets/105371830/f12b0c75-43ab-4106-85c2-d9dc702df93a)
 This Arduino code (ico) is for working with 4 DC motors and 16x8 matrix LED board.
 
