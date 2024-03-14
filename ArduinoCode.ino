@@ -7,18 +7,24 @@ Dictionary<char, unsigned char*> MyDict;
 ////////////////////////////////
 // MOTOR VARIABLES
 
-int motorsRight_analog = 9;
 int motorsRight_digital = 2;
-
-int motorsLeft_analog = 5;
 int motorsLeft_digital = 4;
+int motorsRight_analog = 9;
+int motorsLeft_analog = 5;
 
-char BTCommand = '';
-int motorPower = 0;
-float directionValue = 1.0f;
+char BTCommand = '{';
 
-int dirLR = 0;
-int dirFB = 0;
+float motorSliderValue = 0.0f;
+float directionSliderValue = 1.0f;
+float speedButtonValue = 0.5f;
+
+float motorFinalPower = 0.0f;
+
+float motorMaxPower = 255.0f;
+
+int steering = 0;
+int frontBack = 0;
+
 
 // MOTOR VARIABLES
 ////////////////////////////////
@@ -111,6 +117,7 @@ bool ledEnabled = true;
 
 
 void setup() {
+
   // BT
   BTaddressReader();
 
@@ -147,151 +154,141 @@ void MotorStuff() {
         break;
 
 
+        // SPEED MULTIPLIER
+      case '[':
+        speedButtonValue = 0.5f;
+        break;
+      case ']':
+        speedButtonValue = 1.0f;
+        break;
+
       // MOTORS
       case '0':
-        dirFB = -1;
-        motorPower = 255;
+        frontBack = -1;
+        motorSliderValue = 1.0f;
         break;
       case '1':
-        dirFB = -1;
-        motorPower = 200;
+        frontBack = -1;
+        motorSliderValue = 0.8f;
         break;
       case '2':
-        dirFB = -1;
-        motorPower = 155;
+        frontBack = -1;
+        motorSliderValue = 0.6f;
         break;
       case '3':
-        dirFB = -1;
-        motorPower = 100;
+        frontBack = -1;
+        motorSliderValue = 0.4f;
         break;
       case '4':
-        motorPower = 0;
-        dirFB = 0;
+        motorSliderValue = 0;
+        frontBack = 0;
         break;
       case '5':
-        dirFB = 1;
-        motorPower = 100;
+        frontBack = 1;
+        motorSliderValue = 0.4f;
         break;
       case '6':
-        dirFB = 1;
-        motorPower = 155;
+        frontBack = 1;
+        motorSliderValue = 0.6f;
         break;
       case '7':
-        dirFB = 1;
-        motorPower = 200;
+        frontBack = 1;
+        motorSliderValue = 0.8f;
         break;
       case '8':
-        dirFB = 1;
-        motorPower = 255;
+        frontBack = 1;
+        motorSliderValue = 1.0f;
         break;
 
         //////////////////////////
 
       case ')':  //0
-        dirLR = -4;
-        directionValue = 0.0f;
+        steering = -4;
+        directionSliderValue = 0.0f;
         break;
       case '!':  //1
-        dirLR = -3;
-        directionValue = 0.25f;
+        steering = -3;
+        directionSliderValue = 0.25f;
         break;
       case '@':  //2
-        dirLR = -2;
-        directionValue = 0.5f;
+        steering = -2;
+        directionSliderValue = 0.5f;
         break;
       case '#':  //3
-        dirLR = -1;
-        directionValue = 0.75f;
+        steering = -1;
+        directionSliderValue = 0.75f;
         break;
       case '$':  //4
-        dirLR = 0;
-        directionValue = 1.0f;
+        steering = 0;
+        directionSliderValue = 1.0f;
         break;
       case '%':  //5
-        dirLR = 1;
-        directionValue = 0.75f;
+        steering = 1;
+        directionSliderValue = 0.75f;
         break;
       case '^':  //6
-        dirLR = 2;
-        directionValue = 0.5f;
+        steering = 2;
+        directionSliderValue = 0.5f;
         break;
       case '&':  //7
-        dirLR = 3;
-        directionValue = 0.25f;
+        steering = 3;
+        directionSliderValue = 0.25f;
         break;
       case '*':  //8
-        dirLR = 4;
-        directionValue = 0.0f;
+        steering = 4;
+        directionSliderValue = 0.0f;
         break;
 
       default:
         break;
     }
 
+    /////////////////////////
+    // MOTOR APPLYIING
+    motorFinalPower = motorMaxPower * motorSliderValue * speedButtonValue;
 
     // FORWARD
-    if (dirFB > 0) {
+    if (frontBack > 0) {
+      digitalWrite(motorsLeft_digital, HIGH);
+      digitalWrite(motorsRight_digital, HIGH);
       // FORWARD RIGHT
-      if (dirLR > 0) {
-        digitalWrite(motorsLeft_digital, HIGH);
-        digitalWrite(motorsRight_digital, HIGH);
-        analogWrite(motorsLeft_analog, motorPower);
-        analogWrite(motorsRight_analog, motorPower * directionValue);
+      if (steering > 0) {
+        analogWrite(motorsLeft_analog, motorFinalPower);
+        analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
       }
       // FORWARD LEFT
-      else if (dirLR < 0) {
-        digitalWrite(motorsRight_digital, HIGH);
-        digitalWrite(motorsLeft_digital, HIGH);
-        analogWrite(motorsRight_analog, motorPower);
-        analogWrite(motorsLeft_analog, motorPower * directionValue);
+      else if (steering < 0) {
+        analogWrite(motorsRight_analog, motorFinalPower);
+        analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
       }
       // FORWARD STRIGHT
       else {
-        digitalWrite(motorsLeft_digital, HIGH);
-        analogWrite(motorsLeft_analog, motorPower);
-        digitalWrite(motorsRight_digital, HIGH);
-        analogWrite(motorsRight_analog, motorPower);
+        analogWrite(motorsLeft_analog, motorFinalPower);
+        analogWrite(motorsRight_analog, motorFinalPower);
       }
     }
-
-
-
     // BACK
-    else if (dirFB < 0) {
+    else if (frontBack < 0) {
+      digitalWrite(motorsRight_digital, LOW);
+      digitalWrite(motorsLeft_digital, LOW);
+
       // BACK RIGHT
-      if (dirLR > 0) {
-        digitalWrite(motorsLeft_digital, LOW);
-        analogWrite(motorsLeft_analog, motorPower);  // 100%
-
-        if (dirLR < 2) {
-          digitalWrite(motorsRight_digital, LOW);
-        } else {
-          digitalWrite(motorsRight_digital, HIGH);
-        }
-        analogWrite(motorsRight_analog, motorPower * directionValue);
+      if (steering > 0) {
+        analogWrite(motorsLeft_analog, motorFinalPower);
+        analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
       }
-
       // BACK LEFT
-      else if (dirLR < 0) {
-        digitalWrite(motorsRight_digital, LOW);
-        analogWrite(motorsRight_analog, motorPower);  // 100%
-
-        if (dirLR > -2) {
-          digitalWrite(motorsLeft_digital, LOW);
-        } else {
-          digitalWrite(motorsLeft_digital, HIGH);
-        }
-        analogWrite(motorsLeft_analog, motorPower * directionValue);
+      else if (steering < 0) {
+        analogWrite(motorsRight_analog, motorFinalPower);
+        analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
       }
-
       // BACK STRIGHT
       else {
-        digitalWrite(motorsLeft_digital, LOW);
-        analogWrite(motorsLeft_analog, motorPower);
-        digitalWrite(motorsRight_digital, LOW);
-        analogWrite(motorsRight_analog, motorPower);
+        analogWrite(motorsLeft_analog, motorFinalPower);
+        analogWrite(motorsRight_analog, motorFinalPower);
       }
     }
+
 
     //STOP
     else {
@@ -299,6 +296,10 @@ void MotorStuff() {
       analogWrite(motorsLeft_analog, 0);
     }
   }
+  // MOTOR APPLYIING
+  /////////////////////////
+
+  
 }
 
 
@@ -370,9 +371,7 @@ void IIC_end() {
 
 // BT MAC TO LED
 void BTaddressReader() {
-  
   Serial.begin(9600);  // 9600
-
   delay(1000);
   Serial.println("AT+ADDR?");  // "AT+ADDR?"
 
