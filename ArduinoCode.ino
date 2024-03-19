@@ -16,7 +16,7 @@ char BTCommand = '{';
 
 float motorSliderValue = 0.0f;
 float directionSliderValue = 1.0f;
-float speedButtonValue = 0.5f;
+float speedButtonValue = 1.0f;
 
 float motorFinalPower = 0.0f;
 
@@ -204,19 +204,19 @@ void MotorStuff() {
 
       case ')':  //0
         steering = -4;
-        directionSliderValue = 0.0f;
+        directionSliderValue = 1.0f;
         break;
       case '!':  //1
         steering = -3;
-        directionSliderValue = 0.25f;
+        directionSliderValue = 0.5f;
         break;
       case '@':  //2
         steering = -2;
-        directionSliderValue = 0.5f;
+        directionSliderValue = 0.0f;
         break;
       case '#':  //3
         steering = -1;
-        directionSliderValue = 0.75f;
+        directionSliderValue = 0.5f;
         break;
       case '$':  //4
         steering = 0;
@@ -224,19 +224,19 @@ void MotorStuff() {
         break;
       case '%':  //5
         steering = 1;
-        directionSliderValue = 0.75f;
+        directionSliderValue = 0.5f;
         break;
       case '^':  //6
         steering = 2;
-        directionSliderValue = 0.5f;
+        directionSliderValue = 0.0f;
         break;
       case '&':  //7
         steering = 3;
-        directionSliderValue = 0.25f;
+        directionSliderValue = 0.5f;
         break;
       case '*':  //8
         steering = 4;
-        directionSliderValue = 0.0f;
+        directionSliderValue = 1.0f;
         break;
 
       default:
@@ -247,46 +247,88 @@ void MotorStuff() {
     // MOTOR APPLYIING
     motorFinalPower = motorMaxPower * motorSliderValue * speedButtonValue;
 
+
     // FORWARD
     if (frontBack > 0) {
-      digitalWrite(motorsLeft_digital, HIGH);
-      digitalWrite(motorsRight_digital, HIGH);
+
       // FORWARD RIGHT
       if (steering > 0) {
+        digitalWrite(motorsLeft_digital, HIGH);
         analogWrite(motorsLeft_analog, motorFinalPower);
+
+        if (steering > 2) {
+          digitalWrite(motorsRight_digital, LOW);
+        } else {
+          digitalWrite(motorsRight_digital, HIGH);
+        }
+
         analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
       }
+
       // FORWARD LEFT
       else if (steering < 0) {
+        digitalWrite(motorsRight_digital, HIGH);
         analogWrite(motorsRight_analog, motorFinalPower);
+
+        if (steering < -2) {
+          digitalWrite(motorsLeft_digital, LOW);
+        } else {
+          digitalWrite(motorsLeft_digital, HIGH);
+        }
+
         analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
       }
+
       // FORWARD STRIGHT
       else {
+        digitalWrite(motorsLeft_digital, HIGH);
+        digitalWrite(motorsRight_digital, HIGH);
         analogWrite(motorsLeft_analog, motorFinalPower);
         analogWrite(motorsRight_analog, motorFinalPower);
       }
     }
+
+
+
     // BACK
     else if (frontBack < 0) {
-      digitalWrite(motorsRight_digital, LOW);
-      digitalWrite(motorsLeft_digital, LOW);
 
       // BACK RIGHT
       if (steering > 0) {
+        digitalWrite(motorsLeft_digital, LOW);
         analogWrite(motorsLeft_analog, motorFinalPower);
+
+        if (steering > 2) {
+          digitalWrite(motorsRight_digital, HIGH);
+        } else {
+          digitalWrite(motorsRight_digital, LOW);
+        }
+
         analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
       }
+
       // BACK LEFT
       else if (steering < 0) {
+        digitalWrite(motorsRight_digital, LOW);
         analogWrite(motorsRight_analog, motorFinalPower);
+
+        if (steering < -2) {
+          digitalWrite(motorsLeft_digital, HIGH);
+        } else {
+          digitalWrite(motorsLeft_digital, LOW);
+        }
+
         analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
       }
+
       // BACK STRIGHT
       else {
+        digitalWrite(motorsRight_digital, LOW);
+        digitalWrite(motorsLeft_digital, LOW);
         analogWrite(motorsLeft_analog, motorFinalPower);
         analogWrite(motorsRight_analog, motorFinalPower);
       }
+
     }
 
 
@@ -298,8 +340,6 @@ void MotorStuff() {
   }
   // MOTOR APPLYIING
   /////////////////////////
-
-  
 }
 
 
