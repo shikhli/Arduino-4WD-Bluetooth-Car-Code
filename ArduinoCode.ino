@@ -12,19 +12,26 @@ int motorsLeft_digital = 4;
 int motorsRight_analog = 9;
 int motorsLeft_analog = 5;
 
-char BTCommand = '{';
+char BTCommand = '0';
 
-float motorSliderValue = 0.0f;
-float directionSliderValue = 1.0f;
-float speedButtonValue = 1.0f;
+float speedButtonValue = 0.5f;
 
+// FOR TANK MODE
+float motorR_Value = 0.0f;
+int motorR_Pole = 0;
+float motorL_Value = 0.0f;
+int motorL_Pole = 0;
+
+// FOR NORMAL MODE
 float motorFinalPower = 0.0f;
+float gas_Value = 0.0f;
+int gas_Pole = 0;
+int direction_Value = 0;
+float direction_Pole = 0.0f;
 
 float motorMaxPower = 255.0f;
 
-int steering = 0;
-int frontBack = 0;
-
+bool tankMode = false;
 
 // MOTOR VARIABLES
 ////////////////////////////////
@@ -130,19 +137,13 @@ void setup() {
 
 
 void loop() {
-  MotorStuff();
-}
 
-
-
-void MotorStuff() {
   while (Serial.available() > 0) {
     BTCommand = Serial.read();
     Serial.println(BTCommand);
 
-
+    // FOR SWITCHES
     switch (BTCommand) {
-
       // LED
       case '.':
         ledEnabled = false;
@@ -153,194 +154,324 @@ void MotorStuff() {
         ApplyLED();
         break;
 
+      // TANK MODE
+      case 't':
+        tankMode = false;
+        ApplyLED();
+        break;
+      case 'T':
+        tankMode = true;
+        ApplyLED();
+        break;
 
-        // SPEED MULTIPLIER
+      // SPEED MULTIPLIER
       case '[':
         speedButtonValue = 0.5f;
         break;
       case ']':
         speedButtonValue = 1.0f;
         break;
+    }
 
-      // MOTORS
+    MotorStuff();
+  }
+}
+
+
+
+void MotorStuff() {
+  if (tankMode) {
+    switch (BTCommand) {
       case '0':
-        frontBack = -1;
-        motorSliderValue = 1.0f;
+        motorR_Pole = -1;
+        motorR_Value = 1.0f;
         break;
       case '1':
-        frontBack = -1;
-        motorSliderValue = 0.8f;
+        motorR_Pole = -1;
+        motorR_Value = 0.8f;
         break;
       case '2':
-        frontBack = -1;
-        motorSliderValue = 0.6f;
+        motorR_Pole = -1;
+        motorR_Value = 0.6f;
         break;
       case '3':
-        frontBack = -1;
-        motorSliderValue = 0.4f;
+        motorR_Pole = -1;
+        motorR_Value = 0.4f;
         break;
       case '4':
-        motorSliderValue = 0;
-        frontBack = 0;
+        motorR_Pole = 0;
+        motorR_Value = 0;
         break;
       case '5':
-        frontBack = 1;
-        motorSliderValue = 0.4f;
+        motorR_Pole = 1;
+        motorR_Value = 0.4f;
         break;
       case '6':
-        frontBack = 1;
-        motorSliderValue = 0.6f;
+        motorR_Pole = 1;
+        motorR_Value = 0.6f;
         break;
       case '7':
-        frontBack = 1;
-        motorSliderValue = 0.8f;
+        motorR_Pole = 1;
+        motorR_Value = 0.8f;
         break;
       case '8':
-        frontBack = 1;
-        motorSliderValue = 1.0f;
+        motorR_Pole = 1;
+        motorR_Value = 1.0f;
         break;
 
         //////////////////////////
 
       case ')':  //0
-        steering = -4;
-        directionSliderValue = 1.0f;
+        motorL_Pole = -1;
+        motorL_Value = 1.0f;
         break;
       case '!':  //1
-        steering = -3;
-        directionSliderValue = 0.5f;
+        motorL_Pole = -1;
+        motorL_Value = 0.8f;
         break;
       case '@':  //2
-        steering = -2;
-        directionSliderValue = 0.0f;
+        motorL_Pole = -1;
+        motorL_Value = 0.6f;
         break;
       case '#':  //3
-        steering = -1;
-        directionSliderValue = 0.5f;
+        motorL_Pole = -1;
+        motorL_Value = 0.4f;
         break;
       case '$':  //4
-        steering = 0;
-        directionSliderValue = 1.0f;
+        motorL_Pole = 0;
+        motorL_Value = 0;
         break;
       case '%':  //5
-        steering = 1;
-        directionSliderValue = 0.5f;
+        motorL_Pole = 1;
+        motorL_Value = 0.4f;
         break;
       case '^':  //6
-        steering = 2;
-        directionSliderValue = 0.0f;
+        motorL_Pole = 1;
+        motorL_Value = 0.6f;
         break;
       case '&':  //7
-        steering = 3;
-        directionSliderValue = 0.5f;
+        motorL_Pole = 1;
+        motorL_Value = 0.8f;
         break;
       case '*':  //8
-        steering = 4;
-        directionSliderValue = 1.0f;
+        motorL_Pole = 1;
+        motorL_Value = 1.0f;
         break;
 
       default:
         break;
     }
+  } else {
 
-    /////////////////////////
-    // MOTOR APPLYIING
-    motorFinalPower = motorMaxPower * motorSliderValue * speedButtonValue;
+    // NORMAL MODE
+    switch (BTCommand) {
+      case '0':
+        gas_Pole = -1;
+        gas_Value = 1.0f;
+        break;
+      case '1':
+        gas_Pole = -1;
+        gas_Value = 0.8f;
+        break;
+      case '2':
+        gas_Pole = -1;
+        gas_Value = 0.6f;
+        break;
+      case '3':
+        gas_Pole = -1;
+        gas_Value = 0.4f;
+        break;
+      case '4':
+        gas_Pole = 0;
+        gas_Value = 0;
+        break;
+      case '5':
+        gas_Pole = 1;
+        gas_Value = 0.4f;
+        break;
+      case '6':
+        gas_Pole = 1;
+        gas_Value = 0.6f;
+        break;
+      case '7':
+        gas_Pole = 1;
+        gas_Value = 0.8f;
+        break;
+      case '8':
+        gas_Pole = 1;
+        gas_Value = 1.0f;
+        break;
 
+        //////////////////////////
 
-    // FORWARD
-    if (frontBack > 0) {
+      case ')':  //0
+        direction_Pole = -4;
+        direction_Value = 1.0f;
+        break;
+      case '!':  //1
+        direction_Pole = -3;
+        direction_Value = 0.5f;
+        break;
+      case '@':  //2
+        direction_Pole = -2;
+        direction_Value = 0.0f;
+        break;
+      case '#':  //3
+        direction_Pole = -1;
+        direction_Value = 0.5f;
+        break;
+      case '$':  //4
+        direction_Pole = 0;
+        direction_Value = 1.0f;
+        break;
+      case '%':  //5
+        direction_Pole = 1;
+        direction_Value = 0.5f;
+        break;
+      case '^':  //6
+        direction_Pole = 2;
+        direction_Value = 0.0f;
+        break;
+      case '&':  //7
+        direction_Pole = 3;
+        direction_Value = 0.5f;
+        break;
+      case '*':  //8
+        direction_Pole = 4;
+        direction_Value = 1.0f;
+        break;
 
-      // FORWARD RIGHT
-      if (steering > 0) {
-        digitalWrite(motorsLeft_digital, HIGH);
-        analogWrite(motorsLeft_analog, motorFinalPower);
-
-        if (steering > 2) {
-          digitalWrite(motorsRight_digital, LOW);
-        } else {
-          digitalWrite(motorsRight_digital, HIGH);
-        }
-
-        analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
-      }
-
-      // FORWARD LEFT
-      else if (steering < 0) {
-        digitalWrite(motorsRight_digital, HIGH);
-        analogWrite(motorsRight_analog, motorFinalPower);
-
-        if (steering < -2) {
-          digitalWrite(motorsLeft_digital, LOW);
-        } else {
-          digitalWrite(motorsLeft_digital, HIGH);
-        }
-
-        analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
-      }
-
-      // FORWARD STRIGHT
-      else {
-        digitalWrite(motorsLeft_digital, HIGH);
-        digitalWrite(motorsRight_digital, HIGH);
-        analogWrite(motorsLeft_analog, motorFinalPower);
-        analogWrite(motorsRight_analog, motorFinalPower);
-      }
-    }
-
-
-
-    // BACK
-    else if (frontBack < 0) {
-
-      // BACK RIGHT
-      if (steering > 0) {
-        digitalWrite(motorsLeft_digital, LOW);
-        analogWrite(motorsLeft_analog, motorFinalPower);
-
-        if (steering > 2) {
-          digitalWrite(motorsRight_digital, HIGH);
-        } else {
-          digitalWrite(motorsRight_digital, LOW);
-        }
-
-        analogWrite(motorsRight_analog, motorFinalPower * directionSliderValue);
-      }
-
-      // BACK LEFT
-      else if (steering < 0) {
-        digitalWrite(motorsRight_digital, LOW);
-        analogWrite(motorsRight_analog, motorFinalPower);
-
-        if (steering < -2) {
-          digitalWrite(motorsLeft_digital, HIGH);
-        } else {
-          digitalWrite(motorsLeft_digital, LOW);
-        }
-
-        analogWrite(motorsLeft_analog, motorFinalPower * directionSliderValue);
-      }
-
-      // BACK STRIGHT
-      else {
-        digitalWrite(motorsRight_digital, LOW);
-        digitalWrite(motorsLeft_digital, LOW);
-        analogWrite(motorsLeft_analog, motorFinalPower);
-        analogWrite(motorsRight_analog, motorFinalPower);
-      }
-
-    }
-
-
-    //STOP
-    else {
-      analogWrite(motorsRight_analog, 0);
-      analogWrite(motorsLeft_analog, 0);
+      default:
+        break;
     }
   }
-  // MOTOR APPLYIING
-  /////////////////////////
+
+
+
+  if (tankMode) {
+    TankModeApply();
+  } else {
+    NormalModeApply();
+  }
+
 }
+
+
+
+void NormalModeApply() {
+  motorFinalPower = motorMaxPower * gas_Value * speedButtonValue;
+
+  // FORWARD
+  if (gas_Pole > 0) {
+
+    // FORWARD RIGHT
+    if (direction_Pole > 0) {
+      digitalWrite(motorsLeft_digital, HIGH);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+
+      if (direction_Pole > 2) {
+        digitalWrite(motorsRight_digital, LOW);
+      } else {
+        digitalWrite(motorsRight_digital, HIGH);
+      }
+
+      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+    }
+
+    // FORWARD LEFT
+    else if (direction_Pole < 0) {
+      digitalWrite(motorsRight_digital, HIGH);
+      analogWrite(motorsRight_analog, motorFinalPower);
+
+      if (direction_Pole < -2) {
+        digitalWrite(motorsLeft_digital, LOW);
+      } else {
+        digitalWrite(motorsLeft_digital, HIGH);
+      }
+
+      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+    }
+
+    // FORWARD STRIGHT
+    else {
+      digitalWrite(motorsLeft_digital, HIGH);
+      digitalWrite(motorsRight_digital, HIGH);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+      analogWrite(motorsRight_analog, motorFinalPower);
+    }
+  }
+
+
+
+  // BACK
+  else if (gas_Pole < 0) {
+
+    // BACK RIGHT
+    if (direction_Pole > 0) {
+      digitalWrite(motorsLeft_digital, LOW);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+
+      if (direction_Pole > 2) {
+        digitalWrite(motorsRight_digital, HIGH);
+      } else {
+        digitalWrite(motorsRight_digital, LOW);
+      }
+
+      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+    }
+
+    // BACK LEFT
+    else if (direction_Pole < 0) {
+      digitalWrite(motorsRight_digital, LOW);
+      analogWrite(motorsRight_analog, motorFinalPower);
+
+      if (direction_Pole < -2) {
+        digitalWrite(motorsLeft_digital, HIGH);
+      } else {
+        digitalWrite(motorsLeft_digital, LOW);
+      }
+
+      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+    }
+
+    // BACK STRIGHT
+    else {
+      digitalWrite(motorsRight_digital, LOW);
+      digitalWrite(motorsLeft_digital, LOW);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+      analogWrite(motorsRight_analog, motorFinalPower);
+    }
+
+  }
+
+
+  //STOP
+  else {
+    analogWrite(motorsRight_analog, 0);
+    analogWrite(motorsLeft_analog, 0);
+  }
+}
+
+void TankModeApply() {
+
+  // LEFT MOTOR
+  if (motorL_Pole > 0) {
+    digitalWrite(motorsRight_digital, HIGH);
+  } else {
+    digitalWrite(motorsRight_digital, LOW);
+  }
+  analogWrite(motorsRight_analog, motorMaxPower * motorL_Value * speedButtonValue);
+
+  // RIGHT MOTOR
+  if (motorR_Pole > 0) {
+    digitalWrite(motorsLeft_digital, HIGH);
+  } else {
+    digitalWrite(motorsLeft_digital, LOW);
+  }
+  analogWrite(motorsLeft_analog, motorMaxPower * motorR_Value * speedButtonValue);
+
+}
+
 
 
 void LEDstuff() {
