@@ -1,0 +1,397 @@
+int motorsRight_digital1 = 5;
+int motorsRight_digital2 = 4;
+int motorsLeft_digital1 = 8;
+int motorsLeft_digital2 = 7;
+
+int motorsRight_analog = 3;
+int motorsLeft_analog = 9;
+
+char BTCommand = '0';
+
+float speedButtonValue = 0.5f;
+
+// FOR TANK MODE
+float motorR_Value = 0.0f;
+int motorR_Pole = 0;
+float motorL_Value = 0.0f;
+int motorL_Pole = 0;
+
+// FOR NORMAL MODE
+float motorFinalPower = 0.0f;
+float gas_Value = 0.0f;
+int gas_Pole = 0;
+int direction_Value = 0;
+float direction_Pole = 0.0f;
+
+float motorMaxPower = 255.0f;
+
+bool tankMode = false;
+
+
+void setup() {
+
+  // BT
+  BTaddressReader();
+
+  // MOTORS
+  pinMode(motorsRight_analog, OUTPUT);
+  pinMode(motorsLeft_analog, OUTPUT);
+
+  pinMode(motorsRight_digital1, OUTPUT);
+  pinMode(motorsRight_digital2, OUTPUT);
+  pinMode(motorsLeft_digital1, OUTPUT);
+  pinMode(motorsLeft_digital2, OUTPUT);
+}
+
+
+void loop() {
+
+  while (Serial.available() > 0) {
+    BTCommand = Serial.read();
+    Serial.println(BTCommand);
+
+    // FOR SWITCHES
+    switch (BTCommand) {
+      // TANK MODE
+      case 't':
+        tankMode = false;
+        break;
+      case 'T':
+        tankMode = true;
+        break;
+
+      // SPEED MULTIPLIER
+      case '[':
+        speedButtonValue = 0.5f;
+        break;
+      case ']':
+        speedButtonValue = 1.0f;
+        break;
+    }
+
+    MotorStuff();
+  }
+}
+
+
+
+void MotorStuff() {
+  if (tankMode) {
+    switch (BTCommand) {
+      case '0':
+        motorR_Pole = -1;
+        motorR_Value = 1.0f;
+        break;
+      case '1':
+        motorR_Pole = -1;
+        motorR_Value = 0.8f;
+        break;
+      case '2':
+        motorR_Pole = -1;
+        motorR_Value = 0.6f;
+        break;
+      case '3':
+        motorR_Pole = -1;
+        motorR_Value = 0.4f;
+        break;
+      case '4':
+        motorR_Pole = 0;
+        motorR_Value = 0;
+        break;
+      case '5':
+        motorR_Pole = 1;
+        motorR_Value = 0.4f;
+        break;
+      case '6':
+        motorR_Pole = 1;
+        motorR_Value = 0.6f;
+        break;
+      case '7':
+        motorR_Pole = 1;
+        motorR_Value = 0.8f;
+        break;
+      case '8':
+        motorR_Pole = 1;
+        motorR_Value = 1.0f;
+        break;
+
+        //////////////////////////
+
+      case ')':  //0
+        motorL_Pole = -1;
+        motorL_Value = 1.0f;
+        break;
+      case '!':  //1
+        motorL_Pole = -1;
+        motorL_Value = 0.8f;
+        break;
+      case '@':  //2
+        motorL_Pole = -1;
+        motorL_Value = 0.6f;
+        break;
+      case '#':  //3
+        motorL_Pole = -1;
+        motorL_Value = 0.4f;
+        break;
+      case '$':  //4
+        motorL_Pole = 0;
+        motorL_Value = 0;
+        break;
+      case '%':  //5
+        motorL_Pole = 1;
+        motorL_Value = 0.4f;
+        break;
+      case '^':  //6
+        motorL_Pole = 1;
+        motorL_Value = 0.6f;
+        break;
+      case '&':  //7
+        motorL_Pole = 1;
+        motorL_Value = 0.8f;
+        break;
+      case '*':  //8
+        motorL_Pole = 1;
+        motorL_Value = 1.0f;
+        break;
+
+      default:
+        break;
+    }
+  } else {
+
+    // NORMAL MODE
+    switch (BTCommand) {
+      case '0':
+        gas_Pole = -1;
+        gas_Value = 1.0f;
+        break;
+      case '1':
+        gas_Pole = -1;
+        gas_Value = 0.8f;
+        break;
+      case '2':
+        gas_Pole = -1;
+        gas_Value = 0.6f;
+        break;
+      case '3':
+        gas_Pole = -1;
+        gas_Value = 0.4f;
+        break;
+      case '4':
+        gas_Pole = 0;
+        gas_Value = 0;
+        break;
+      case '5':
+        gas_Pole = 1;
+        gas_Value = 0.4f;
+        break;
+      case '6':
+        gas_Pole = 1;
+        gas_Value = 0.6f;
+        break;
+      case '7':
+        gas_Pole = 1;
+        gas_Value = 0.8f;
+        break;
+      case '8':
+        gas_Pole = 1;
+        gas_Value = 1.0f;
+        break;
+
+        //////////////////////////
+
+      case ')':  //0
+        direction_Pole = -4;
+        direction_Value = 1.0f;
+        break;
+      case '!':  //1
+        direction_Pole = -3;
+        direction_Value = 0.5f;
+        break;
+      case '@':  //2
+        direction_Pole = -2;
+        direction_Value = 0.0f;
+        break;
+      case '#':  //3
+        direction_Pole = -1;
+        direction_Value = 0.5f;
+        break;
+      case '$':  //4
+        direction_Pole = 0;
+        direction_Value = 1.0f;
+        break;
+      case '%':  //5
+        direction_Pole = 1;
+        direction_Value = 0.5f;
+        break;
+      case '^':  //6
+        direction_Pole = 2;
+        direction_Value = 0.0f;
+        break;
+      case '&':  //7
+        direction_Pole = 3;
+        direction_Value = 0.5f;
+        break;
+      case '*':  //8
+        direction_Pole = 4;
+        direction_Value = 1.0f;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+
+
+  if (tankMode) {
+    TankModeApply();
+  } else {
+    NormalModeApply();
+  }
+
+}
+
+
+
+void NormalModeApply() {
+  motorFinalPower = motorMaxPower * gas_Value * speedButtonValue;
+
+  // FORWARD
+  if (gas_Pole > 0) {
+
+    // FORWARD RIGHT
+    if (direction_Pole > 0) {
+      digitalWrite(motorsLeft_digital1, HIGH);
+      digitalWrite(motorsLeft_digital2, LOW);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+
+      if (direction_Pole > 2) {
+        digitalWrite(motorsRight_digital1, LOW);
+        digitalWrite(motorsRight_digital2, HIGH);
+      } else {
+        digitalWrite(motorsRight_digital1, HIGH);
+        digitalWrite(motorsRight_digital2, LOW);
+      }
+
+      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+    }
+
+    // FORWARD LEFT
+    else if (direction_Pole < 0) {
+      digitalWrite(motorsRight_digital1, HIGH);
+      digitalWrite(motorsRight_digital2, LOW);
+      analogWrite(motorsRight_analog, motorFinalPower);
+
+      if (direction_Pole < -2) {
+        digitalWrite(motorsLeft_digital1, LOW);
+        digitalWrite(motorsLeft_digital2, HIGH);
+      } else {
+        digitalWrite(motorsLeft_digital1, HIGH);
+        digitalWrite(motorsLeft_digital2, LOW);
+      }
+
+      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+    }
+
+    // FORWARD STRIGHT
+    else {
+      digitalWrite(motorsLeft_digital1, HIGH);
+      digitalWrite(motorsLeft_digital2, LOW);
+      digitalWrite(motorsRight_digital1, HIGH);
+      digitalWrite(motorsRight_digital2, LOW);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+      analogWrite(motorsRight_analog, motorFinalPower);
+    }
+  }
+
+
+
+  // BACK
+  else if (gas_Pole < 0) {
+
+    // BACK RIGHT
+    if (direction_Pole > 0) {
+      digitalWrite(motorsLeft_digital1, LOW);
+      digitalWrite(motorsLeft_digital2, HIGH);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+
+      if (direction_Pole > 2) {
+        digitalWrite(motorsRight_digital1, HIGH);
+        digitalWrite(motorsRight_digital2, LOW);
+      } else {
+        digitalWrite(motorsRight_digital1, LOW);
+        digitalWrite(motorsRight_digital2, HIGH);
+      }
+
+      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+    }
+
+    // BACK LEFT
+    else if (direction_Pole < 0) {
+      digitalWrite(motorsRight_digital1, LOW);
+      digitalWrite(motorsRight_digital2, HIGH);
+      analogWrite(motorsRight_analog, motorFinalPower);
+
+      if (direction_Pole < -2) {
+        digitalWrite(motorsLeft_digital1, HIGH);
+        digitalWrite(motorsLeft_digital2, LOW);
+      } else {
+        digitalWrite(motorsLeft_digital1, LOW);
+        digitalWrite(motorsLeft_digital2, HIGH);
+      }
+
+      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+    }
+
+    // BACK STRIGHT
+    else {
+      digitalWrite(motorsRight_digital1, LOW);
+      digitalWrite(motorsRight_digital2, HIGH);
+      digitalWrite(motorsLeft_digital1, LOW);
+      digitalWrite(motorsLeft_digital2, HIGH);
+      analogWrite(motorsLeft_analog, motorFinalPower);
+      analogWrite(motorsRight_analog, motorFinalPower);
+    }
+
+  }
+
+
+  //STOP
+  else {
+    analogWrite(motorsRight_analog, 0);
+    analogWrite(motorsLeft_analog, 0);
+  }
+}
+
+void TankModeApply() {
+
+  // LEFT MOTOR
+  if (motorL_Pole > 0) {
+    digitalWrite(motorsRight_digital1, HIGH);
+    digitalWrite(motorsRight_digital2, LOW);
+  } else {
+    digitalWrite(motorsRight_digital1, LOW);
+    digitalWrite(motorsRight_digital2, HIGH);
+  }
+  analogWrite(motorsRight_analog, motorMaxPower * motorL_Value * speedButtonValue);
+
+  // RIGHT MOTOR
+  if (motorR_Pole > 0) {
+    digitalWrite(motorsLeft_digital1, HIGH);
+    digitalWrite(motorsLeft_digital2, LOW);
+  } else {
+    digitalWrite(motorsLeft_digital1, LOW);
+    digitalWrite(motorsLeft_digital2, HIGH);
+  }
+  analogWrite(motorsLeft_analog, motorMaxPower * motorR_Value * speedButtonValue);
+
+}
+
+
+void BTaddressReader() {
+  Serial.begin(9600);  // 9600
+  delay(1000);
+  // Serial.println("AT+ADDR?");  // "AT+ADDR?"
+}
+
