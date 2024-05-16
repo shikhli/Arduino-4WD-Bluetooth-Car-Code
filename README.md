@@ -5,7 +5,7 @@ This Arduino code (ico) is for working with 4 DC motors and 16x8 matrix LED boar
 Tested on **Keyestudio 4WD BT Robot Car V2.0 Kit for Arduino (Arduino Uno & Motor Shield V2.0).**
 
 **Android app:**
-https://play.google.com/store/apps/details?id=com.zakirshikhli.ble_app
+https://play.google.com/store/apps/details?id=zakirshikhli.ble_app
 
 **FEATURES:**
 * Smooth control with **Analogue sliders**
