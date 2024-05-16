@@ -16,7 +16,8 @@ https://play.google.com/store/apps/details?id=zakirshikhli.ble_app
 
 
 Sample image of a robot with **Keyestudio Motor Shield V2.0** motor driver
-![IMG_20240502_092809](https://github.com/shikhli/Arduino-Bluetooth-car-remote/assets/105371830/71afc00a-a219-47ab-92ed-5dde44590b0f)
+![IMG_20240502_092722](https://github.com/shikhli/Arduino-Bluetooth-car-remote/assets/105371830/0b4d27c7-4c5f-4d0c-94dd-dccb6a0de7a5)
+
 
 Sample image of a robot with **L298N** motor driver
-![IMG_20240502_092722](https://github.com/shikhli/Arduino-Bluetooth-car-remote/assets/105371830/0b4d27c7-4c5f-4d0c-94dd-dccb6a0de7a5)
+![IMG_20240502_092809](https://github.com/shikhli/Arduino-Bluetooth-car-remote/assets/105371830/71afc00a-a219-47ab-92ed-5dde44590b0f)
