@@ -26,8 +26,8 @@ int motorL_Pole = 0;
 float motorFinalPower = 0.0f;
 float gas_Value = 0.0f;
 int gas_Pole = 0;
-int direction_Value = 0;
-float direction_Pole = 0.0f;
+int motor_direction_Value = 0;
+float robot_direction_Pole = 0.0f;
 
 float motorMaxPower = 255.0f;
 
@@ -305,40 +305,40 @@ void MotorStuff() {
         //////////////////////////
 
       case ')':  //0
-        direction_Pole = -4;
-        direction_Value = 1.0f;
+        robot_direction_Pole = -4;
+        motor_direction_Value = 0.5f;
         break;
       case '!':  //1
-        direction_Pole = -3;
-        direction_Value = 0.5f;
+        robot_direction_Pole = -3;
+        motor_direction_Value = 0.25f;
         break;
       case '@':  //2
-        direction_Pole = -2;
-        direction_Value = 0.0f;
+        robot_direction_Pole = -2;
+        motor_direction_Value = 0.0f;
         break;
       case '#':  //3
-        direction_Pole = -1;
-        direction_Value = 0.5f;
+        robot_direction_Pole = -1;
+        motor_direction_Value = 0.5f;
         break;
       case '$':  //4
-        direction_Pole = 0;
-        direction_Value = 1.0f;
+        robot_direction_Pole = 0;
+        motor_direction_Value = 1.0f;
         break;
       case '%':  //5
-        direction_Pole = 1;
-        direction_Value = 0.5f;
+        robot_direction_Pole = 1;
+        motor_direction_Value = 0.5f;
         break;
       case '^':  //6
-        direction_Pole = 2;
-        direction_Value = 0.0f;
+        robot_direction_Pole = 2;
+        motor_direction_Value = 0.0f;
         break;
       case '&':  //7
-        direction_Pole = 3;
-        direction_Value = 0.5f;
+        robot_direction_Pole = 3;
+        motor_direction_Value = 0.25f;
         break;
       case '*':  //8
-        direction_Pole = 4;
-        direction_Value = 1.0f;
+        robot_direction_Pole = 4;
+        motor_direction_Value = 0.5f;
         break;
 
       default:
@@ -365,31 +365,31 @@ void NormalModeApply() {
   if (gas_Pole > 0) {
 
     // FORWARD RIGHT
-    if (direction_Pole > 0) {
+    if (robot_direction_Pole > 0) {
       digitalWrite(motorsLeft_digital, HIGH);
       analogWrite(motorsLeft_analog, motorFinalPower);
 
-      if (direction_Pole > 2) {
+      if (robot_direction_Pole > 2) {
         digitalWrite(motorsRight_digital, LOW);
       } else {
         digitalWrite(motorsRight_digital, HIGH);
       }
 
-      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+      analogWrite(motorsRight_analog, motorFinalPower * motor_direction_Value);
     }
 
     // FORWARD LEFT
-    else if (direction_Pole < 0) {
+    else if (robot_direction_Pole < 0) {
       digitalWrite(motorsRight_digital, HIGH);
       analogWrite(motorsRight_analog, motorFinalPower);
 
-      if (direction_Pole < -2) {
+      if (robot_direction_Pole < -2) {
         digitalWrite(motorsLeft_digital, LOW);
       } else {
         digitalWrite(motorsLeft_digital, HIGH);
       }
 
-      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+      analogWrite(motorsLeft_analog, motorFinalPower * motor_direction_Value);
     }
 
     // FORWARD STRIGHT
@@ -407,31 +407,31 @@ void NormalModeApply() {
   else if (gas_Pole < 0) {
 
     // BACK RIGHT
-    if (direction_Pole > 0) {
+    if (robot_direction_Pole > 0) {
       digitalWrite(motorsLeft_digital, LOW);
       analogWrite(motorsLeft_analog, motorFinalPower);
 
-      if (direction_Pole > 2) {
+      if (robot_direction_Pole > 2) {
         digitalWrite(motorsRight_digital, HIGH);
       } else {
         digitalWrite(motorsRight_digital, LOW);
       }
 
-      analogWrite(motorsRight_analog, motorFinalPower * direction_Value);
+      analogWrite(motorsRight_analog, motorFinalPower * motor_direction_Value);
     }
 
     // BACK LEFT
-    else if (direction_Pole < 0) {
+    else if (robot_direction_Pole < 0) {
       digitalWrite(motorsRight_digital, LOW);
       analogWrite(motorsRight_analog, motorFinalPower);
 
-      if (direction_Pole < -2) {
+      if (robot_direction_Pole < -2) {
         digitalWrite(motorsLeft_digital, HIGH);
       } else {
         digitalWrite(motorsLeft_digital, LOW);
       }
 
-      analogWrite(motorsLeft_analog, motorFinalPower * direction_Value);
+      analogWrite(motorsLeft_analog, motorFinalPower * motor_direction_Value);
     }
 
     // BACK STRIGHT
