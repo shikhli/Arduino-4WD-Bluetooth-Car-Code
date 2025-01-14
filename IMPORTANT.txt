@@ -1,0 +1,9 @@
+Dictionary Installation:
+
+Click Code > Download ZIP
+Open Arduino IDE
+From the Sketch menu select Include Library > Add .ZIP Library
+Navigate to Dictionary-master.zip
+Click Open
+
+DONT UPDATE "Dictionary.h" !
