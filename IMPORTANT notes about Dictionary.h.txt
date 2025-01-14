@@ -1,5 +1,7 @@
-Dictionary Installation:
+Dictionary by KeeganMartin: github.com/KeeganMartin
+Repository link: github.com/KeeganMartin/Dictionary
 
+Installation:
 Click Code > Download ZIP
 Open Arduino IDE
 From the Sketch menu select Include Library > Add .ZIP Library
